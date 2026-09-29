@@ -34,3 +34,6 @@
 *   **Data Validation:** Frequency analysis (`PROC FREQ`) and metadata inspection (`PROC CONTENTS`).
 *   **Clinical Standards:** CDISC SDTM (Implementation Guide compliance) and ADaM dataset architecture.
 *   **Version Control:** Command Line Interface (CLI) Git management and repository maintenance.
+
+## AI Usage Disclosure
+Google Gemini was utilized to draft this README and project formatting.
