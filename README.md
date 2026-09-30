@@ -1,5 +1,7 @@
 # 📊 Clinical SAS Programming Portfolio: CDISC SDTM & ADaM Pipeline
 
+**Author:** Haruma Kurita | SAS Certified Specialist: Base Programming Using SAS 9.4 | MS Biostatistics Candidate
+
 > **Project Overview**
 > This repository demonstrates an end-to-end clinical trial data processing workflow using SAS. To simulate an enterprise-level clinical programming environment, a baseline PhUSE pilot dataset was programmatically expanded to 500,000 records. This synthetic dataset contains intentionally injected data anomalies—including duplicate records, categorical typos, and truncation errors—to stress-test downstream cleaning logic and demonstrate production-level memory management.
 > 
@@ -24,8 +26,10 @@
 *   **Validation:** Cleans and validates ISO 8601 date formats (`BRTHDTC`) using nested `LENGTH` and `STRIP` functions.
 *   **Domain Compliance:** Enforces strict SDTM structural compliance using the `KEEP` statement to retain only required domain variables.
 
-### 3. ADaM Subject-Level Analysis Dataset (`03_adam_adsl.sas`) — *In Progress*
-*   Derives numeric analysis variables (e.g., `SEXN`) from categorical SDTM variables to prepare the data for efficient statistical modeling.
+### 3. ADaM Subject-Level Analysis Dataset (`03_adam_adsl.sas`)
+*   **Numeric Mappings:** Derives numeric analysis variables (e.g., `SEXN`) from categorical SDTM domains for statistical modeling.
+*   **Date Conversions & Math:** Transforms ISO 8601 character strings into numeric SAS dates and calculates precise biological `AGE` using the `YRDIF` function relative to study milestones.
+*   **Defensive Programming:** Safely intercepts missing or invalid upstream data (e.g., simulated missing birth dates) and maps them to appropriate SAS missing values (`.`), preventing downstream calculation failures.
 
 ---
 
@@ -35,5 +39,5 @@
 *   **Clinical Standards:** CDISC SDTM (Implementation Guide compliance) and ADaM dataset architecture.
 *   **Version Control:** Command Line Interface (CLI) Git management and repository maintenance.
 
-## AI Usage Disclosure
-Google Gemini was utilized to draft this README and project formatting.
+---
+*AI Usage Disclosure: Google Gemini was utilized as a thought partner to structure this repository and format project documentation.*
