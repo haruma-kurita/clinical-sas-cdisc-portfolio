@@ -26,7 +26,7 @@ run;
   
 /* Generate the massive dataset in a single pass */
   data &outdata;
-    length SUBJID $15 USUBJID $40 SEX $6; /* Expanded length to allow typos */
+    length SUBJID $15 USUBJID $40 SEX $6 BRTHDTC $10; /* Expanded lengths to allow typos and standard dates */
     drop i iteration rand_err;
     
     total_loops = ceil(&target_rows / &base_n);
@@ -39,11 +39,12 @@ run;
         SUBJID = cats(put(iteration, z4.), "-", SUBJID);
         USUBJID = catx("-", STUDYID, SUBJID);
         
-        /* B. Inject Random Technical Errors */
+        /* B. Inject Random Technical Errors and Valid Dates */
         rand_err = rand("Uniform");
         
         if rand_err < 0.05 then BRTHDTC = "Unknown";
         else if rand_err < 0.10 then BRTHDTC = ""; 
+        else BRTHDTC = put('01JAN1945'd + rand('integer', 1, 21900), yymmdd10. -l); /* Generates valid ISO date */
         
         if rand_err > 0.90 and rand_err <= 0.95 then SEX = "Male"; 
         else if rand_err > 0.95 then SEX = "Femail"; 
