@@ -5,7 +5,7 @@
 > **Project Overview**
 > This repository demonstrates an end-to-end clinical trial data processing workflow using SAS. To simulate an enterprise-level clinical programming environment, a baseline PhUSE pilot dataset was programmatically expanded to 500,000 records. This synthetic dataset contains intentionally injected data anomalies—including duplicate records, categorical typos, and truncation errors—to stress-test downstream cleaning logic and demonstrate production-level memory management.
 > 
-> The pipeline cleans, standardizes, and maps this raw data into CDISC-compliant Study Data Tabulation Model (SDTM) and Analysis Data Model (ADaM) datasets, preparing it for biostatistical modeling.
+> The pipeline cleans, standardizes, and maps this raw data into CDISC-compliant Study Data Tabulation Model (SDTM) and Analysis Data Model (ADaM) datasets, preparing it for biostatistical modeling and regulatory reporting.
 
 ## 📁 Directory Structure
 *   `data_raw/`: Contains the initial, uncleaned 500,000-row synthetic dataset *(Git ignored due to file size limits)*.
@@ -14,7 +14,7 @@
 
 ---
 
-## ⚙️ Pipeline Architecture & Scripts
+## ⚙ Pipeline Architecture & Scripts
 
 ### 1. Data Ingestion & Simulation (`01_setup_and_multiplier.sas`)
 *   Uses SAS macros to scale raw PhUSE data up to 500,000 rows.
@@ -31,12 +31,25 @@
 *   **Date Conversions & Math:** Transforms ISO 8601 character strings into numeric SAS dates and calculates precise biological `AGE` using the `YRDIF` function relative to study milestones.
 *   **Defensive Programming:** Safely intercepts missing or invalid upstream data (e.g., simulated missing birth dates) and maps them to appropriate SAS missing values (`.`), preventing downstream calculation failures.
 
+### 4. SDTM Adverse Events Mapping (`04_sdtm_ae.sas`)
+*   **Terminology Standardization:** Passes raw investigator verbatim text (`AETERM`) alongside standardized MedDRA dictionary-coded terms (`AEDECOD`).
+*   **Data Cleansing:** Strips hidden trailing and leading spaces from character fields to prevent downstream relational merging anomalies.
+
+### 5. ADaM Adverse Events Dataset (`05_adam_adae.sas`)
+*   **Relational Data Integration:** Executes a one-to-many merge to integrate core demographic analysis covariates (`AGE`, `SEXN`) from ADSL with the SDTM AE safety domain.
+*   **Population Flagging:** Utilizes temporary `IN=` variables to strictly retain records for patients who experienced adverse events, omitting healthy demographics from the safety analysis subset.
+
+### 6. Tables, Listings, and Figures (`06_tlf_ae_summary.sas`)
+*   **Regulatory Reporting:** Utilizes `PROC REPORT` to generate a clinical summary table (formatted as CSR Table 14.3.1).
+*   **Data Stratification:** Quantifies MedDRA preferred term incidence rates across the safety population, stratifying event counts by baseline demographic groups.
+
 ---
 
 ## 🚀 Technical Competencies Demonstrated
-*   **SAS Base Programming:** Data Step logic, conditional processing, and macro utilization.
+*   **SAS Base Programming:** Data Step logic, conditional processing, array/macro utilization, and relational merging.
 *   **Data Validation:** Frequency analysis (`PROC FREQ`) and metadata inspection (`PROC CONTENTS`).
 *   **Clinical Standards:** CDISC SDTM (Implementation Guide compliance) and ADaM dataset architecture.
+*   **Clinical Reporting:** Generating submission-ready Tables, Listings, and Figures (TLFs) using `PROC REPORT`.
 *   **Version Control:** Command Line Interface (CLI) Git management and repository maintenance.
 
 ---
